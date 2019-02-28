@@ -1,0 +1,29 @@
+{
+  "name": "simplephp/minphp",
+  "keywords": [
+    "framework",
+    "simplephp",
+    "swoole"
+  ],
+  "description": "基于 Swoole 的常驻内存高性能 PHP 框架(小而美)",
+  "homepage": "https://github.com/simplephp/minphp",
+  "license": "Apache-2.0",
+  "require": {
+    "php": ">=7.0.0",
+    "ext-swoole": ">=1.9.5",
+    "simplephp/minphp-framework": "1.1.1"
+  },
+  "authors": [
+    {
+      "name": "kevin",
+      "email": "askyiwang@gmail.com",
+      "homepage": "https://github.com/simplephp",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "minphp\\": "src/"
+    }
+  }
+}
