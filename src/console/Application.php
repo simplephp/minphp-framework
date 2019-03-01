@@ -6,7 +6,7 @@ namespace min\console;
  * App类
  * @author 刘健 <coder.liu@qq.com>
  */
-class Application extends \min\base\Application
+class Application
 {
 
     // 命令命名空间
