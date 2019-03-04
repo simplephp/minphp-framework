@@ -1,12 +1,16 @@
 <?php
 
+/**
+ * description
+ * @author         kevin <askyiwang@gmail.com>
+ * @date           2018/6/28
+ * @since          1.0
+ */
 namespace min\console;
 
-/**
- * App类
- * @author 刘健 <coder.liu@qq.com>
- */
-class Application
+use min\base\Input;
+
+class Application extends \min\base\Application
 {
 
     // 命令命名空间
@@ -21,6 +25,8 @@ class Application
         if (PHP_SAPI != 'cli') {
             throw new \RuntimeException('Please run in CLI mode.');
         }
-
+        //$input = $this->get('input');
+        $input = new Input();
+        var_dump($input);
     }
 }

@@ -1,54 +1,43 @@
 <?php
 
-namespace min\base;
-
 /**
- * 组件基类
- * @author 刘健 <coder.liu@qq.com>
+ * description     组件 yii2
+ * @author         kevin <askyiwang@gmail.com>
+ * @date           2018/6/28
+ * @since          1.0
  */
-abstract class Component extends BaseObject implements  ComponentInterface
+
+namespace min\base;
+use Closure;
+
+class Component extends BaseObject
 {
+    /**
+     * @var array shared component instances indexed by their IDs
+     */
+    private $_components = [];
+    /**
+     * @var array component definitions indexed by their IDs
+     */
+    private $_definitions = [];
 
-    // 协程模式
-    private $_coroutineMode = ComponentInterface::COROUTINE_MODE_NEW;
-
-    // 状态
-    private $_status = ComponentInterface::STATUS_READY;
-
-    // 获取状态
-    public function getStatus()
+    public function get($id, $throwException = true)
     {
-        return $this->_status;
-    }
+        if (isset($this->_components[$id])) {
+            return $this->_components[$id];
+        }
 
-    // 设置状态
-    public function setStatus($status)
-    {
-        $this->_status = $status;
-    }
+        if (isset($this->_definitions[$id])) {
+            $definition = $this->_definitions[$id];
+            if (is_object($definition) && !$definition instanceof Closure) {
+                return $this->_components[$id] = $definition;
+            }
 
-    // 获取协程模式
-    public function getCoroutineMode()
-    {
-        return $this->_coroutineMode;
-    }
-
-    // 设置协程模式
-    public function setCoroutineMode($coroutineMode)
-    {
-        $this->_coroutineMode = $coroutineMode;
-    }
-
-    // 请求前置事件
-    public function onRequestBefore()
-    {
-        $this->setStatus(ComponentInterface::STATUS_RUNNING);
-    }
-
-    // 请求后置事件
-    public function onRequestAfter()
-    {
-        $this->setStatus(ComponentInterface::STATUS_READY);
+            return $this->_components[$id] = \Min::createObject($definition);
+        } elseif ($throwException) {
+            throw new \Exception("Unknown component ID: $id");
+        }
+        return null;
     }
 
 }

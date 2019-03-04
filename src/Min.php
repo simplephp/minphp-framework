@@ -17,12 +17,18 @@ class Min
     /**
      * @var $_app
      */
-    protected static $_app;
+    public static $_app;
 
     /**
      * @var $container
      */
     public static $container;
 
-    
+    /**
+     * @param $name
+     * @return mixed
+     */
+    public static function createObject($name) {
+        return $name;
+    }
 }

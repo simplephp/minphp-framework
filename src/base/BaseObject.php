@@ -6,22 +6,16 @@ namespace min\base;
  * 对象基类
  * @author 刘健 <coder.liu@qq.com>
  */
-abstract class BaseObject implements StaticInstanceInterface
+abstract class BaseObject
 {
-
-    use StaticInstanceTrait;
-
     // 构造
     public function __construct($config = [])
     {
         // 执行构造事件
         $this->onConstruct();
-        // 构建配置
-        $config = \Mix::configure($config);
-        // 导入属性
-        \Mix::importAttributes($this, $config);
+
         // 执行初始化事件
-        $this->onInitialize();
+        $this->afterInitialize();
     }
 
     // 析构
@@ -36,7 +30,7 @@ abstract class BaseObject implements StaticInstanceInterface
     }
 
     // 初始化事件
-    public function onInitialize()
+    public function afterInitialize()
     {
     }
 
