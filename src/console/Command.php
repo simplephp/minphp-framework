@@ -1,8 +1,8 @@
 <?php
 
-namespace mix\console;
+namespace min\console;
 
-use mix\base\BaseObject;
+use min\base\BaseObject;
 
 /**
  * Command类

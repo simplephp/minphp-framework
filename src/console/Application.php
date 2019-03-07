@@ -9,6 +9,7 @@
 namespace min\console;
 
 use min\base\Input;
+use min\di\Container;
 
 class Application extends \min\base\Application
 {
@@ -26,7 +27,19 @@ class Application extends \min\base\Application
             throw new \RuntimeException('Please run in CLI mode.');
         }
         //$input = $this->get('input');
-        $input = new Input();
-        var_dump($input);
+        $Container = new Container();
+
+        $args = ['hello', 'world'];
+        $Container->set('myDB', [
+            'class' => 'min\helpers\Test',
+            'config' => ['root'],
+            'password' => '',
+            'charset' => 'utf8',
+        ]);
+
+        $Container->get('myDB');
+
+
+
     }
 }

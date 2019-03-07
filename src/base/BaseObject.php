@@ -1,11 +1,14 @@
 <?php
 
+/**
+ * description
+ * @author         kevin <askyiwang@gmail.com>
+ * @date           2018/6/28
+ * @since          1.0
+ */
+
 namespace min\base;
 
-/**
- * 对象基类
- * @author 刘健 <coder.liu@qq.com>
- */
 abstract class BaseObject
 {
     // 构造
