@@ -1,8 +1,8 @@
 <?php
 
-namespace mix\console;
+namespace min\console;
 
-use mix\base\Component;
+use min\base\Component;
 
 /**
  * Input组件

@@ -11,34 +11,38 @@ namespace min\base;
 
 abstract class BaseObject
 {
-    // 构造
+    /**
+     * 初始化配置文件
+     * BaseObject constructor.
+     * @param array $config
+     */
     public function __construct($config = [])
     {
-        // 执行构造事件
-        $this->onConstruct();
-
-        // 执行初始化事件
-        $this->afterInitialize();
+        if (!empty($config)) {
+            self::configure($this, $config);
+        }
+        $this->init();
     }
 
-    // 析构
-    public function __destruct()
+    /**
+     * 初始化配置
+     * @param $object
+     * @param $properties
+     * @return mixed
+     */
+    public static function configure($object, $properties)
     {
-        $this->onDestruct();
+        foreach ($properties as $name => $value) {
+            $object->$name = $value;
+        }
+
+        return $object;
     }
 
-    // 构造事件
-    public function onConstruct()
-    {
-    }
-
-    // 初始化事件
-    public function afterInitialize()
-    {
-    }
-
-    // 析构事件
-    public function onDestruct()
+    /**
+     * 集成后-初始化
+     */
+    public function init()
     {
     }
 

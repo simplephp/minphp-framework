@@ -21,15 +21,30 @@ class Min
     public static $_app;
 
     /**
-     * @var $container
+     * @class \min\di\Container $container
      */
     public static $container;
 
+
     /**
-     * @param $name
+     * @param $type
+     * @param array $params
      * @return mixed
      */
-    public static function createObject($name) {
-        return $name;
+    public static function createObject($type, array $params = [])
+    {
+        if (is_string($type)) {
+            return static::$container->get($type, $params);
+        } elseif (is_array($type) && isset($type['class'])) {
+            $class = $type['class'];
+            unset($type['class']);
+            return static::$container->get($class, $params, $type);
+        } elseif (is_callable($type, true)) {
+            return static::$container->invoke($type, $params);
+        } elseif (is_array($type)) {
+            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
+        }
+
+        throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
     }
 }

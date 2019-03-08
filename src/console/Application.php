@@ -8,8 +8,8 @@
  */
 namespace min\console;
 
-use min\base\Input;
 use min\di\Container;
+use min\exception\ExitException;
 
 class Application extends \min\base\Application
 {
@@ -20,26 +20,27 @@ class Application extends \min\base\Application
     // 命令
     public $commands = [];
 
-    // 执行功能 (CLI模式)
+    /**
+     *
+     */
     public function run()
     {
         if (PHP_SAPI != 'cli') {
             throw new \RuntimeException('Please run in CLI mode.');
         }
-        //$input = $this->get('input');
-        $Container = new Container();
 
-        $args = ['hello', 'world'];
-        $Container->set('myDB', [
-            'class' => 'min\helpers\Test',
-            'config' => 'root',
-            'password' => '',
-            'charset' => 'utf8',
+        \Min::$container->set('input', [
+            'class' => 'min\console\Input',
         ]);
 
-        $Container->get('myDB');
-
+        $input = \Min::$container->get('input');
 
 
     }
+
+    public function executeAction(string $route, $options) {
+
+    }
+
+
 }

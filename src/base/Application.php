@@ -8,6 +8,8 @@
  */
 namespace min\base;
 
+use min\di\Container;
+
 class Application extends Component
 {
 
@@ -34,11 +36,11 @@ class Application extends Component
      */
     public function __construct($config = [])
     {
-        //\Min::$_app = $this;
+        \Min::$_app = $this;
+        \Min::$container = new Container();
         //$this->registerErrorHandler($config);
 
         // 组件注入
-        echo "我已经被初始化了....".PHP_EOL;
         Component::__construct($config);
     }
 
