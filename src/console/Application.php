@@ -29,12 +29,9 @@ class Application extends \min\base\Application
             throw new \RuntimeException('Please run in CLI mode.');
         }
 
-        \Min::$container->set('input', [
-            'class' => 'min\console\Input',
-        ]);
+        $input = $this->getInput();
 
-        $input = \Min::$container->get('input');
-
+        var_dump($input);
 
     }
 

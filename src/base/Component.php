@@ -21,6 +21,12 @@ class Component extends BaseObject
      */
     private $_definitions = [];
 
+    /**
+     * @param $id
+     * @param bool $throwException
+     * @return mixed|null
+     * @throws \Exception
+     */
     public function get($id, $throwException = true)
     {
         if (isset($this->_components[$id])) {

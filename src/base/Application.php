@@ -44,10 +44,13 @@ class Application extends Component
         Component::__construct($config);
     }
 
-
-    public function getRequest()
+    /**
+     * 命令行输入组件
+     * @return mixed|null
+     */
+    public function getInput()
     {
-        return $this->get('request');
+        return $this->get('input');
     }
 
 }
