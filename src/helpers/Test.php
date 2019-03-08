@@ -16,9 +16,8 @@ class Test
 
     public $config;
 
-    public function __construct(array $config = [])
+    public function __construct()
     {
-        $this->config = $config;
     }
 
     public function show() {

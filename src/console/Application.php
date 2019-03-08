@@ -32,7 +32,7 @@ class Application extends \min\base\Application
         $args = ['hello', 'world'];
         $Container->set('myDB', [
             'class' => 'min\helpers\Test',
-            'config' => ['root'],
+            'config' => 'root',
             'password' => '',
             'charset' => 'utf8',
         ]);

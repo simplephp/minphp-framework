@@ -34,8 +34,12 @@ class Application extends Component
      */
     public function __construct($config = [])
     {
-       // \Min::$_app = $this;
-        parent::__construct($config);
+        //\Min::$_app = $this;
+        //$this->registerErrorHandler($config);
+
+        // 组件注入
+        echo "我已经被初始化了....".PHP_EOL;
+        Component::__construct($config);
     }
 
 

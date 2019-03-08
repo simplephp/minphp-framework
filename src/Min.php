@@ -6,6 +6,7 @@
  * @date           2019/2/28
  * @since          1.0
  */
+
 class Min
 {
 
