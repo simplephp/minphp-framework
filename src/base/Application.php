@@ -12,24 +12,10 @@ use min\di\Container;
 
 class Application extends Component
 {
-
-    // 初始化回调
-    public $initialize = [];
-
-    // 基础路径
-    public $basePath = '';
-
-    // 组件配置
-    public $components = [];
-
-    // 类库配置
-    public $libraries = [];
-
-    // 组件容器
-    protected $_components;
-
-    // 组件命名空间
-    protected $_componentPrefix;
+    /**
+     * @var
+     */
+    private $_runtimePath;
 
     /**
      * Application constructor.
@@ -39,6 +25,8 @@ class Application extends Component
         \Min::$_app = $this;
         \Min::$container = new Container();
         //$this->registerErrorHandler($config);
+
+        $this->preInit($config);
 
         // 组件注入
         Component::__construct($config);
@@ -53,4 +41,68 @@ class Application extends Component
         return $this->get('input');
     }
 
+    /**
+     * 命令行输入组件
+     * @return mixed|null
+     */
+    public function getResponse()
+    {
+        return $this->get('response');
+    }
+
+    /**
+     * 初始化
+     * @param array $config
+     */
+    public function preInit(array &$config) {
+
+        if (isset($config['runtimePath'])) {
+            $this->setRuntimePath($config['runtimePath']);
+            unset($config['runtimePath']);
+        } else {
+            // set "@runtime"
+            $this->getRuntimePath();
+        }
+
+        // merge core components with custom components
+        foreach ($this->baseComponents() as $id => $component) {
+            if (!isset($config['components'][$id])) {
+                $config['components'][$id] = $component;
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
+                $config['components'][$id]['class'] = $component['class'];
+            }
+        }
+    }
+
+
+    /**
+     * 设置 runtime path
+     * @param $path
+     */
+    public function setRuntimePath($path)
+    {
+        $this->_runtimePath = $path;
+    }
+
+    /**
+     * 获取 runtime path
+     * @return mixed
+     */
+    public function getRuntimePath()
+    {
+        return $this->_runtimePath;
+    }
+
+
+    /**
+     * 基础组件
+     * @return array
+     */
+    public function baseComponents()
+    {
+        return [
+            'input' => ['class' => 'min\base\Input'],
+            'response' => ['class' => 'min\base\Response'],
+        ];
+    }
 }

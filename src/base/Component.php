@@ -23,6 +23,43 @@ class Component extends BaseObject
 
     /**
      * @param $id
+     * @param $definition
+     */
+    public function set($id, $definition)
+    {
+        unset($this->_components[$id]);
+
+        if ($definition === null) {
+            unset($this->_definitions[$id]);
+            return;
+        }
+
+        if (is_object($definition) || is_callable($definition, true)) {
+            // an object, a class name, or a PHP callable
+            $this->_definitions[$id] = $definition;
+        } elseif (is_array($definition)) {
+            // a configuration array
+            if (isset($definition['class'])) {
+                $this->_definitions[$id] = $definition;
+            } else {
+                throw new InvalidConfigException("The configuration for the \"$id\" component must contain a \"class\" element.");
+            }
+        } else {
+            throw new InvalidConfigException("Unexpected configuration type for the \"$id\" component: " . gettype($definition));
+        }
+    }
+
+    /**
+     * Removes the component from the locator.
+     * @param string $id the component ID
+     */
+    public function clear($id)
+    {
+        unset($this->_definitions[$id], $this->_components[$id]);
+    }
+
+    /**
+     * @param $id
      * @param bool $throwException
      * @return mixed|null
      * @throws \Exception
@@ -46,4 +83,14 @@ class Component extends BaseObject
         return null;
     }
 
+    /**
+     *
+     * @param $components
+     */
+    public function setComponents($components)
+    {
+        foreach ($components as $id => $component) {
+            $this->set($id, $component);
+        }
+    }
 }

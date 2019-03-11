@@ -9,7 +9,7 @@
 
 namespace min\base;
 
-class Input extends Component
+class Response extends Component
 {
     /**
      * @var array shared component instances indexed by their IDs
@@ -20,10 +20,16 @@ class Input extends Component
      */
     private $_scriptFileName = null;
 
+
+    public function afterInitialize()
+    {
+        $this->initialize();
+    }
+
     /**
      * 初始化
      */
-    public function init() {
+    public function initialize() {
 
         $options = [];
         $params = $GLOBALS['argv'];

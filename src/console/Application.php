@@ -31,13 +31,8 @@ class Application extends \min\base\Application
 
         $input = $this->getInput();
 
-        var_dump($input);
+        $command = $input->getCommand();
+        var_dump($command);
 
     }
-
-    public function executeAction(string $route, $options) {
-
-    }
-
-
 }

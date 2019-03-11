@@ -306,7 +306,6 @@ class Container extends Component
             }
         }
 
-        var_dump($dependencies);
         // 保存_reflections 反射实例化的对象缓存
         $this->_reflections[$class] = $reflection;
 

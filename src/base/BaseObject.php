@@ -40,6 +40,43 @@ abstract class BaseObject
     }
 
     /**
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        $getter = 'get' . $name;
+        if (method_exists($this, $getter)) {
+            return $this->$getter();
+        } elseif (method_exists($this, 'set' . $name)) {
+            throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
+        }
+
+        throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
+    }
+
+    /**
+     * 基础 get set
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        $setter = 'set' . $name;
+        echo "##################***#######################".PHP_EOL;
+        echo $setter.PHP_EOL;
+        echo "##################***#######################".PHP_EOL;
+        if (method_exists($this, $setter)) {
+            $this->$setter($value);
+        } elseif (method_exists($this, 'get' . $name)) {
+            throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
+        } else {
+            throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
+        }
+    }
+
+
+    /**
      * 集成后-初始化
      */
     public function init()
