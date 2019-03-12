@@ -11,64 +11,51 @@ namespace min\base;
 
 class Response extends Component
 {
-    /**
-     * @var array shared component instances indexed by their IDs
-     */
-    private $_command = [];
-    /**
-     * @var array component definitions indexed by their IDs
-     */
-    private $_scriptFileName = null;
 
+    // 颜色
+    const NONE = "\033[0m";
+    const BOLD = "\033[1m";
 
-    public function afterInitialize()
+    const FG_BLACK = "\033[30m";
+    const FG_RED = "\033[31m";
+    const FG_GREEN = "\033[32m";
+    const FG_YELLOW = "\033[33m";
+    const FG_BLUE = "\033[34m";
+
+    const BG_BLACK = "\033[30m";
+    const BG_RED = "\033[41m";
+    const BG_GREEN = "\033[42m";
+    const BG_YELLOW = "\033[43m";
+    const BG_BLUE = "\033[44m";
+
+    // 是否为 WIN 操作系统
+    protected $_isWin;
+
+    // 构造事件
+    public function onConstruct()
     {
-        $this->initialize();
+        $this->_isWin =  stripos(PHP_OS, 'WINNT') !== false;
     }
 
-    /**
-     * 初始化
-     */
-    public function initialize() {
-
-        $options = [];
-        $params = $GLOBALS['argv'];
-        array_shift($params);
-        foreach ($params as $key => $value) {
-
-            // 获取命令
-            if (in_array($key, [1, 2])) {
-                $this->_command[] = $value;
-            }
-            // 获取选项
-            if ($key > 2) {
-                if (substr($value, 0, 2) == '--') {
-                    $options[] = substr($value, 2);
-                } else if (substr($value, 0, 1) == '-') {
-                    $options[] = substr($value, 1);
-                }
-            }
+    // ANSI 格式化
+    public function ansiFormat($message, $color = self::NONE)
+    {
+        if ($this->_isWin) {
+            return $message;
         }
-
-        parse_str(implode('&', $options), $options);
-        // 设置选项默认值
-        foreach ($options as $name => $value) {
-            if ($value === '') {
-                $options[$name] = true;
-            }
-        }
-
-
-        $this->_options = $options;
+        return $color . $message . self::NONE;
     }
 
-
-    public function getCommand() {
-
-        return $this->_command;
+    // 写入
+    public function write($message, $color = self::NONE)
+    {
+        echo $this->ansiFormat($message, $color);
     }
 
-    public function getScriptFileName() {
-        return $this->_scriptFileName;
+    // 写入，带换行
+    public function writeln($message, $color = self::NONE)
+    {
+        echo $this->ansiFormat($message, $color) . PHP_EOL;
     }
+
 }

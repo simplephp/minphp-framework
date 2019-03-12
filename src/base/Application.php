@@ -10,6 +10,11 @@ namespace min\base;
 
 use min\di\Container;
 
+/**
+ * @property \min\console\Input $input
+ * Class Application
+ * @package min\base
+ */
 class Application extends Component
 {
     /**
@@ -27,9 +32,17 @@ class Application extends Component
         //$this->registerErrorHandler($config);
 
         $this->preInit($config);
-
         // 组件注入
         Component::__construct($config);
+    }
+
+    /**
+     *
+     * @param $command
+     * @param $params
+     */
+    public function runAction($controller, $action, $params) {
+        var_dump($controller);
     }
 
     /**

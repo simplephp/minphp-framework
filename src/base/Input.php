@@ -20,16 +20,21 @@ class Input extends Component
      */
     private $_scriptFileName = null;
 
+    private $_options = [];
+
     /**
-     * 初始化
+     *   入口文件：mix-httpd
+     *   命令：service start
+     *   选项：-d
      */
     public function init() {
 
         $options = [];
         $params = $GLOBALS['argv'];
-        array_shift($params);
-        foreach ($params as $key => $value) {
 
+        $this->_scriptFileName = isset($params[0]) ? $params[0] : '';
+
+        foreach ($params as $key => $value) {
             // 获取命令
             if (in_array($key, [1, 2])) {
                 $this->_command[] = $value;
@@ -43,7 +48,6 @@ class Input extends Component
                 }
             }
         }
-
         parse_str(implode('&', $options), $options);
         // 设置选项默认值
         foreach ($options as $name => $value) {
@@ -52,16 +56,49 @@ class Input extends Component
             }
         }
 
-
         $this->_options = $options;
     }
 
-
-    public function getCommand() {
-
-        return $this->_command;
+    /**
+     * 获取 command
+     * @return string
+     */
+    public function getCommand()
+    {
+        return implode(' ', $this->_command);
     }
 
+    /**
+     * 获取 controller name
+     * @return mixed|string
+     */
+    public function getControllerName()
+    {
+        return isset($this->_command[0]) ? $this->_command[0] : '';
+    }
+
+
+    /**
+     * 获取 action name
+     * @return mixed|string
+     */
+    public function getActionName()
+    {
+        return isset($this->_command[1]) ? $this->_command[1] : '';
+    }
+
+    /**
+     * 获取 options
+     * @return array
+     */
+    public function getOptions() {
+        return $this->_options;
+    }
+
+    /**
+     * 获取脚本名称
+     * @return array
+     */
     public function getScriptFileName() {
         return $this->_scriptFileName;
     }
