@@ -42,7 +42,22 @@ class Application extends Component
      * @param $params
      */
     public function runAction($controller, $action, $params) {
-        var_dump($controller);
+
+        $classNamespace = $this->commandNamespace.'\\'.ucfirst($controller).'Command';
+
+        $actionName = 'action'.$action;
+
+        if (class_exists($classNamespace)) {
+            $commandInstance = new $classNamespace($params);
+            // 判断方法是否存在
+            if (method_exists($commandInstance, $action)) {
+                return $commandInstance->$actionName();
+            }
+        } else {
+            var_dump($classNamespace);
+        }
+
+        var_dump($classNamespace);
     }
 
     /**
