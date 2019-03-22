@@ -57,7 +57,7 @@ class Application extends Component
             if (method_exists($commandInstance, $actionName)) {
 
                 $status = $commandInstance->$actionName();
-                var_dump($status);
+                return false;
             }
         } else {
             var_dump($classNamespace);
