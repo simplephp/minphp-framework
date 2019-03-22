@@ -11,6 +11,7 @@ namespace min\console;
 
 use min\di\Container;
 use min\exception\ExitException;
+use min\pool\Redis;
 
 class Application extends \min\base\Application
 {

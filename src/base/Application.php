@@ -8,6 +8,7 @@
  */
 namespace min\base;
 
+use app\commands\TestCommand;
 use min\di\Container;
 
 /**
@@ -43,21 +44,24 @@ class Application extends Component
      */
     public function runAction($controller, $action, $params) {
 
+
         $classNamespace = $this->commandNamespace.'\\'.ucfirst($controller).'Command';
 
-        $actionName = 'action'.$action;
+
+        $actionName = $action.'Action';
 
         if (class_exists($classNamespace)) {
             $commandInstance = new $classNamespace($params);
             // 判断方法是否存在
-            if (method_exists($commandInstance, $action)) {
-                return $commandInstance->$actionName();
+
+            if (method_exists($commandInstance, $actionName)) {
+
+                $status = $commandInstance->$actionName();
+                var_dump($status);
             }
         } else {
             var_dump($classNamespace);
         }
-
-        var_dump($classNamespace);
     }
 
     /**
