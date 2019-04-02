@@ -6,10 +6,12 @@
  * @date           2018/6/28
  * @since          1.0
  */
+
 namespace min\base;
 
 use app\commands\TestCommand;
 use min\di\Container;
+use min\exception\NotFoundException;
 
 /**
  * @property \min\console\Input $input
@@ -42,25 +44,39 @@ class Application extends Component
      * @param $command
      * @param $params
      */
-    public function runAction($controller, $action, $params) {
+    public function runAction($controller, $action, $params)
+    {
 
+        $controller = ucfirst($controller);
 
-        $classNamespace = $this->commandNamespace.'\\'.ucfirst($controller).'Command';
+        if (!preg_match('/^[A-Za-z](\w|\.)*$/', $controller)) {
+            throw new NotFoundException('wrong controller format:' . $controller);
+        }
 
+        if (!preg_match('/^[A-Za-z](\w|\.)*$/', $action)) {
+            throw new NotFoundException('wrong action format:' . $action);
+        }
 
-        $actionName = $action.'Action';
+        $classNamespace = $this->commandNamespace . '\\' . ucfirst($controller) . 'Command';
+
+        $actionName = $action . 'Action';
 
         if (class_exists($classNamespace)) {
-            $commandInstance = new $classNamespace($params);
-            // 判断方法是否存在
 
-            if (method_exists($commandInstance, $actionName)) {
+            $reflect = new \ReflectionClass($classNamespace);
+            //$constructor = $reflect->getConstructor();
+            $commandInstance = $reflect->newInstanceArgs($params);
 
-                $status = $commandInstance->$actionName();
-                return false;
+            if (!is_callable([$commandInstance, $actionName])) {
+                throw new NotFoundException('The action does not callable:' . $actionName);
+
             }
+            // 执行操作方法
+            $reflect = new \ReflectionMethod($commandInstance, $actionName);
+            return $reflect->invokeArgs($commandInstance, $params);
+
         } else {
-            var_dump($classNamespace);
+            throw new NotFoundException('The controller does not exist:' . $controller);
         }
     }
 
@@ -86,7 +102,8 @@ class Application extends Component
      * 初始化
      * @param array $config
      */
-    public function preInit(array &$config) {
+    public function preInit(array &$config)
+    {
 
         if (isset($config['runtimePath'])) {
             $this->setRuntimePath($config['runtimePath']);
