@@ -9,7 +9,6 @@
 
 namespace min\process;
 
-use min\base\Component;
 use min\helpers\ProcessHelper;
 use Swoole\Table;
 
@@ -29,7 +28,7 @@ class BaseProcess
 
     public function start()
     {
-        ProcessHelper::setTitle($this->processName . "-Master");
+        ProcessHelper::setTitle($this->processName . "-manager");
         $this->processBuilder();
         $this->signalHandle();
 
