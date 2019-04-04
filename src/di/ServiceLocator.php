@@ -5,91 +5,63 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\di;
+namespace min\di;
 
 use Closure;
-use Yii;
-use min\base\Component;
-use min\exception\InvalidConfigException;
+use min\base\BaseObject;
 
 /**
- * ServiceLocator implements a [service locator](http://en.wikipedia.org/wiki/Service_locator_pattern).
- *
- * To use ServiceLocator, you first need to register component IDs with the corresponding component
- * definitions with the locator by calling [[set()]] or [[setComponents()]].
- * You can then call [[get()]] to retrieve a component with the specified ID. The locator will automatically
- * instantiate and configure the component according to the definition.
- *
- * For example,
- *
- * ```php
- * $locator = new \yii\di\ServiceLocator;
- * $locator->setComponents([
- *     'db' => [
- *         'class' => 'yii\db\Connection',
- *         'dsn' => 'sqlite:path/to/file.db',
- *     ],
- *     'cache' => [
- *         'class' => 'yii\caching\DbCache',
- *         'db' => 'db',
- *     ],
- * ]);
- *
- * $db = $locator->get('db');  // or $locator->db
- * $cache = $locator->get('cache');  // or $locator->cache
- * ```
- *
- * Because [[\yii\base\Module]] extends from ServiceLocator, modules and the application are all service locators.
- * Modules add [tree traversal](guide:concept-service-locator#tree-traversal) for service resolution.
- *
- * For more details and usage information on ServiceLocator, see the [guide article on service locators](guide:concept-service-locator).
- *
- * @property array $components The list of the component definitions or the loaded component instances (ID =>
- * definition or instance).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * 服务定位
+ * Class ServiceLocator
+ * @package min\di
  */
-class ServiceLocator extends Component
+class ServiceLocator extends BaseObject
 {
     /**
      * @var array shared component instances indexed by their IDs
      */
-    private $_components = [];
+    public $_components = [];
     /**
      * @var array component definitions indexed by their IDs
      */
-    private $_definitions = [];
+    public $_definitions = [];
 
 
     /**
-     * Getter magic method.
-     * This method is overridden to support accessing components like reading properties.
-     * @param string $name component or property name
-     * @return mixed the named property value
+     * @param $name
+     * @return null|object
      */
     public function __get($name)
     {
         if ($this->has($name)) {
             return $this->get($name);
         }
+    }
 
-        return parent::__get($name);
+    public function __set($name, $value)
+    {
+        $setter = 'set' . $name;
+        echo "############################[__set]##############################".PHP_EOL;
+        echo $setter.PHP_EOL;
+        echo "############################[__set]##############################".PHP_EOL;
+        if (method_exists($this, $setter)) {
+            // set property
+            $this->$setter($value);
+
+            return;
+        }
+        throw new \min\exception\UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
     }
 
     /**
-     * Checks if a property value is null.
-     * This method overrides the parent implementation by checking if the named component is loaded.
-     * @param string $name the property name or the event name
-     * @return bool whether the property value is null
+     * @param $name
+     * @return bool
      */
     public function __isset($name)
     {
         if ($this->has($name)) {
             return true;
         }
-
-        return parent::__isset($name);
     }
 
     /**
@@ -124,6 +96,7 @@ class ServiceLocator extends Component
      */
     public function get($id, $throwException = true)
     {
+
         if (isset($this->_components[$id])) {
             return $this->_components[$id];
         }
@@ -133,57 +106,17 @@ class ServiceLocator extends Component
             if (is_object($definition) && !$definition instanceof Closure) {
                 return $this->_components[$id] = $definition;
             }
-
-            return $this->_components[$id] = Yii::createObject($definition);
+            return $this->_components[$id] = \Min::createObject($definition);
         } elseif ($throwException) {
-            throw new InvalidConfigException("Unknown component ID: $id");
+            throw new \min\exception\InvalidConfigException("Unknown component ID: $id");
         }
 
         return null;
     }
 
     /**
-     * Registers a component definition with this locator.
-     *
-     * For example,
-     *
-     * ```php
-     * // a class name
-     * $locator->set('cache', 'yii\caching\FileCache');
-     *
-     * // a configuration array
-     * $locator->set('db', [
-     *     'class' => 'yii\db\Connection',
-     *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
-     *     'username' => 'root',
-     *     'password' => '',
-     *     'charset' => 'utf8',
-     * ]);
-     *
-     * // an anonymous function
-     * $locator->set('cache', function ($params) {
-     *     return new \yii\caching\FileCache;
-     * });
-     *
-     * // an instance
-     * $locator->set('cache', new \yii\caching\FileCache);
-     * ```
-     *
-     * If a component definition with the same ID already exists, it will be overwritten.
-     *
-     * @param string $id component ID (e.g. `db`).
-     * @param mixed $definition the component definition to be registered with this locator.
-     * It can be one of the following:
-     *
-     * - a class name
-     * - a configuration array: the array contains name-value pairs that will be used to
-     *   initialize the property values of the newly created object when [[get()]] is called.
-     *   The `class` element is required and stands for the the class of the object to be created.
-     * - a PHP callable: either an anonymous function or an array representing a class method (e.g. `['Foo', 'bar']`).
-     *   The callable will be called by [[get()]] to return an object associated with the specified component ID.
-     * - an object: When [[get()]] is called, this object will be returned.
-     *
-     * @throws InvalidConfigException if the definition is an invalid configuration array
+     * @param $id
+     * @param $definition
      */
     public function set($id, $definition)
     {
@@ -202,16 +135,16 @@ class ServiceLocator extends Component
             if (isset($definition['class'])) {
                 $this->_definitions[$id] = $definition;
             } else {
-                throw new InvalidConfigException("The configuration for the \"$id\" component must contain a \"class\" element.");
+                throw new \min\exception\InvalidConfigException("The configuration for the \"$id\" component must contain a \"class\" element.");
             }
         } else {
-            throw new InvalidConfigException("Unexpected configuration type for the \"$id\" component: " . gettype($definition));
+            throw new \min\exception\InvalidConfigException("Unexpected configuration type for the \"$id\" component: " . gettype($definition));
         }
     }
 
     /**
-     * Removes the component from the locator.
-     * @param string $id the component ID
+     * 清除
+     * @param $id
      */
     public function clear($id)
     {
@@ -219,9 +152,9 @@ class ServiceLocator extends Component
     }
 
     /**
-     * Returns the list of the component definitions or the loaded component instances.
-     * @param bool $returnDefinitions whether to return component definitions instead of the loaded component instances.
-     * @return array the list of the component definitions or the loaded component instances (ID => definition or instance).
+     * 获取组件
+     * @param bool $returnDefinitions
+     * @return array
      */
     public function getComponents($returnDefinitions = true)
     {
@@ -229,31 +162,8 @@ class ServiceLocator extends Component
     }
 
     /**
-     * Registers a set of component definitions in this locator.
-     *
-     * This is the bulk version of [[set()]]. The parameter should be an array
-     * whose keys are component IDs and values the corresponding component definitions.
-     *
-     * For more details on how to specify component IDs and definitions, please refer to [[set()]].
-     *
-     * If a component definition with the same ID already exists, it will be overwritten.
-     *
-     * The following is an example for registering two component definitions:
-     *
-     * ```php
-     * [
-     *     'db' => [
-     *         'class' => 'yii\db\Connection',
-     *         'dsn' => 'sqlite:path/to/file.db',
-     *     ],
-     *     'cache' => [
-     *         'class' => 'yii\caching\DbCache',
-     *         'db' => 'db',
-     *     ],
-     * ]
-     * ```
-     *
-     * @param array $components component definitions or instances
+     * 批量设置组件
+     * @param $components
      */
     public function setComponents($components)
     {

@@ -3,11 +3,11 @@
 namespace min\console;
 
 use min\base\Component;
-use min\helpers\PhpInfoHelper;
 
 /**
- * Output组件
- * @author 刘健 <coder.liu@qq.com>
+ * console 下的 output
+ * Class Output
+ * @package min\console
  */
 class Output extends Component
 {
@@ -34,7 +34,7 @@ class Output extends Component
     // 构造事件
     public function onConstruct()
     {
-        $this->_isWin = PhpInfoHelper::isWin();
+        $this->_isWin = (stripos(PHP_OS, 'WINNT') !== false);
     }
 
     // ANSI 格式化

@@ -7,7 +7,7 @@
 
 namespace min\di;
 
-use Yii;
+use Min;
 use min\exception\InvalidConfigException;
 
 /**
@@ -113,7 +113,7 @@ class Instance
         if (is_array($reference)) {
             $class = isset($reference['class']) ? $reference['class'] : $type;
             if (!$container instanceof Container) {
-                $container = Yii::$container;
+                $container = Min::$container;
             }
             unset($reference['class']);
             $component = $container->get($class, [], $reference);
@@ -160,11 +160,12 @@ class Instance
         if ($container) {
             return $container->get($this->id);
         }
-        if (Yii::$app && Yii::$app->has($this->id)) {
-            return Yii::$app->get($this->id);
+
+        if (Min::$_app && Min::$_app->has($this->id)) {
+            return Min::$_app->get($this->id);
         }
 
-        return Yii::$container->get($this->id);
+        return Min::$container->get($this->id);
     }
 
     /**

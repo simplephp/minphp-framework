@@ -27,7 +27,7 @@ class Input extends Component
      *   命令：service start
      *   选项：-d
      */
-    public function init() {
+    public function _onInitialize() {
 
         $options = [];
         $params = $GLOBALS['argv'];

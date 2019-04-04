@@ -32,6 +32,7 @@ class Application extends \min\base\Application
         }
 
         $input = $this->getInput();
+
         $command = $input->getCommand();
 
         if (empty($command)) {

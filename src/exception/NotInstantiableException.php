@@ -5,9 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\di;
-
-use min\exception\InvalidConfigException;
+namespace min\exception;
 
 /**
  * NotInstantiableException represents an exception caused by incorrect dependency injection container

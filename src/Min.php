@@ -6,7 +6,6 @@
  * @date           2019/2/28
  * @since          1.0
  */
-
 class Min
 {
 
@@ -42,9 +41,24 @@ class Min
         } elseif (is_callable($type, true)) {
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
-            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
+            throw new \min\exception\InvalidConfigException('Object configuration must be an array containing a "class" element.');
         }
 
-        throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
+        throw new \min\exception\InvalidConfigException('Unsupported configuration type: ' . gettype($type));
+    }
+
+    /**
+     * 配置类属性
+     * @param $object
+     * @param $properties
+     * @return mixed
+     */
+    public static function configure($object, $properties)
+    {
+        foreach ($properties as $name => $value) {
+            $object->$name = $value;
+        }
+
+        return $object;
     }
 }

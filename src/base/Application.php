@@ -9,8 +9,8 @@
 
 namespace min\base;
 
-use app\commands\TestCommand;
 use min\di\Container;
+use min\di\ServiceLocator;
 use min\exception\NotFoundException;
 
 /**
@@ -18,7 +18,7 @@ use min\exception\NotFoundException;
  * Class Application
  * @package min\base
  */
-class Application extends Component
+abstract class Application extends ServiceLocator
 {
     /**
      * @var
@@ -33,10 +33,35 @@ class Application extends Component
         \Min::$_app = $this;
         \Min::$container = new Container();
         //$this->registerErrorHandler($config);
-
-        $this->preInit($config);
+        // 初始化组件
+        $this->parseConfig($config);
         // 组件注入
-        Component::__construct($config);
+        parent::__construct($config);
+
+    }
+
+    /**
+     * 初始化
+     * @param array $config
+     */
+    public function parseConfig(array &$config)
+    {
+
+        if (isset($config['runtimePath'])) {
+            $this->setRuntimePath($config['runtimePath']);
+            unset($config['runtimePath']);
+        } else {
+            $this->getRuntimePath();
+        }
+
+        // merge core components with custom components
+        foreach ($this->baseComponents() as $id => $component) {
+            if (!isset($config['components'][$id])) {
+                $config['components'][$id] = $component;
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
+                $config['components'][$id]['class'] = $component['class'];
+            }
+        }
     }
 
     /**
@@ -81,6 +106,14 @@ class Application extends Component
     }
 
     /**
+     * 初始化配置、基础组件 等
+     */
+    public function _onInitialize()
+    {
+
+    }
+
+    /**
      * 命令行输入组件
      * @return mixed|null
      */
@@ -88,41 +121,6 @@ class Application extends Component
     {
         return $this->get('input');
     }
-
-    /**
-     * 命令行输入组件
-     * @return mixed|null
-     */
-    public function getResponse()
-    {
-        return $this->get('response');
-    }
-
-    /**
-     * 初始化
-     * @param array $config
-     */
-    public function preInit(array &$config)
-    {
-
-        if (isset($config['runtimePath'])) {
-            $this->setRuntimePath($config['runtimePath']);
-            unset($config['runtimePath']);
-        } else {
-            // set "@runtime"
-            $this->getRuntimePath();
-        }
-
-        // merge core components with custom components
-        foreach ($this->baseComponents() as $id => $component) {
-            if (!isset($config['components'][$id])) {
-                $config['components'][$id] = $component;
-            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
-                $config['components'][$id]['class'] = $component['class'];
-            }
-        }
-    }
-
 
     /**
      * 设置 runtime path

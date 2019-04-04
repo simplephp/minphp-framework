@@ -8,11 +8,11 @@
 namespace min\di;
 
 use ReflectionClass;
-use Yii;
+use Min;
 use min\base\Component;
 use min\exception\InvalidConfigException;
 use min\helpers\ArrayHelper;
-use yii\di\NotInstantiableException;
+use min\exception\NotInstantiableException;
 
 /**
  * 基础容器
@@ -411,7 +411,7 @@ class Container extends Component
                     unset($params[$name]);
                 } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {
                     $args[] = array_shift($params);
-                } elseif (isset(Yii::$app) && Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
+                } elseif (isset(Min::$_app) && Min::$_app->has($name) && ($obj = Min::$_app->get($name)) instanceof $className) {
                     $args[] = $obj;
                 } else {
                     // If the argument is optional we catch not instantiable exceptions
