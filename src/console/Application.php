@@ -23,7 +23,7 @@ class Application extends \min\base\Application
     public $commands = [];
 
     /**
-     *
+     * 入口
      */
     public function run()
     {
@@ -32,7 +32,6 @@ class Application extends \min\base\Application
         }
 
         $input = $this->getInput();
-
         $command = $input->getCommand();
 
         if (empty($command)) {
@@ -54,8 +53,9 @@ class Application extends \min\base\Application
 
     }
 
-
-    // 帮助
+    /**
+     * 帮助
+     */
     protected function help()
     {
         $input = $input = $this->getInput();
@@ -66,16 +66,19 @@ class Application extends \min\base\Application
         $output->writeln('');
     }
 
-    // 版本
+    /**
+     * 版本
+     */
     protected function version()
     {
-        $input = $input = $this->getInput();
         $output = $this->getResponse();
         $version = \Min::VERSION;
         $output->writeln("MixPHP Framework Version {$version}");
     }
 
-    // 打印选项列表
+    /**
+     * 打印选项列表
+     */
     protected function printOptions()
     {
         $output = $this->getResponse();
@@ -85,7 +88,9 @@ class Application extends \min\base\Application
         $output->writeln("  -v/--version\tPrint version information.");
     }
 
-    // 打印命令列表
+    /**
+     * 打印选项列表
+     */
     protected function printCommands()
     {
         $output = $this->getResponse();

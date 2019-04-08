@@ -41,13 +41,9 @@ class ServiceLocator extends BaseObject
     public function __set($name, $value)
     {
         $setter = 'set' . $name;
-        echo "############################[__set]##############################".PHP_EOL;
-        echo $setter.PHP_EOL;
-        echo "############################[__set]##############################".PHP_EOL;
         if (method_exists($this, $setter)) {
             // set property
             $this->$setter($value);
-
             return;
         }
         throw new \min\exception\UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);

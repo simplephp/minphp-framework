@@ -122,6 +122,16 @@ abstract class Application extends ServiceLocator
         return $this->get('input');
     }
 
+
+    /**
+     * 命令行输入组件
+     * @return mixed|null
+     */
+    public function getResponse()
+    {
+        return $this->get('response');
+    }
+
     /**
      * 设置 runtime path
      * @param $path

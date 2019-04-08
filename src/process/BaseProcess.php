@@ -10,6 +10,8 @@
 namespace min\process;
 
 use min\helpers\ProcessHelper;
+use min\pool\PoolManager;
+use Swoole\Process\Pool;
 use Swoole\Table;
 
 class BaseProcess
@@ -28,7 +30,7 @@ class BaseProcess
 
     public function start()
     {
-        ProcessHelper::setTitle($this->processName . "-manager");
+        ProcessHelper::setTitle($this->processName . "-master");
         $this->processBuilder();
         $this->signalHandle();
 
@@ -68,9 +70,13 @@ class BaseProcess
         $masterPid = ProcessHelper::getPid();
         $process = new \Swoole\Process(function ($worker) use ($masterPid, $workerId) {
             try {
+                $queue = PoolManager::getInstance()->getPool('Redis');
+
+                echo "##############____#############".PHP_EOL;
+                var_dump($queue);
+                echo "##############____#############".PHP_EOL;
 
                 ProcessHelper::setTitle($this->processName . '-wrok-' . $workerId);
-
                 // 循环执行任务
                 for ($j = 0; $j < $this->maxExecutions; $j++) {
                     $data = ['request_url' => 'www.baidu.com'];
@@ -89,6 +95,7 @@ class BaseProcess
                     }
                 }
             } catch (\Throwable $e) {
+                var_dump($e->getMessage());
                 //\Mix::app()->error->handleException($e);
             }
         }, false, false);
